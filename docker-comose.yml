@@ -1,5 +1,5 @@
 # docker-composeのバージョンを指定
-version: "3.11"
+version: "3.9"
 
 # db(MySQL),app(Django)のコンテナを作成
 services:
@@ -37,14 +37,14 @@ services:
     # DjangoのDockerfileをビルドする
     build:
       # ビルドコンテキストはカレントディレクトリ
-      context: ./portfolio/
+      context: ./quiz/
     # コンテナ名をFlaskに設定
     container_name: Django
     # ボリュームを指定
     # ローカルのカレントディレクトリをコンテナの/codeにマウントする
     volumes:
       - tmp-data:/app/tmp
-      - ./portfolio:/quize
+      - ./quiz:/app
       - ./Nginx/static:/app/static
     # ローカルの5000番ポートとコンテナの5000番ポートをつなぐ
     # ports:
