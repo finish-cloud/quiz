@@ -1,4 +1,4 @@
 # Pythonのイメージを指定
-FROM python:3.13-buster
+FROM python:3.11-buster
 # PYTHONDONTWRITEBYTECODEとPYTHONUNBUFFEREDはオプション
 # pycファイル(および__pycache__)の生�
