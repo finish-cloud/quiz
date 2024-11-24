@@ -29,5 +29,5 @@ RUN pip install -U pip setuptools wheel cython && pip install --no-cache-dir -r 
 COPY . /code/
 
 # アプリケーションの起動コマンド
-CMD ["python", "apps.py"]
+CMD ["python", "apps.py", "runserver", "0.0.0.0:8000"]
 
