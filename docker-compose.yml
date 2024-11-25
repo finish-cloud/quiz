@@ -44,7 +44,7 @@ services:
     # ローカルのカレントディレクトリをコンテナの/codeにマウントする
     volumes:
       - tmp-data:/app/tmp
-      - ./mysite:/apps
+      - ./mysite:/app
       - ./Nginx/static:/app/static
     # ローカルの5000番ポートとコンテナの5000番ポートをつなぐ
     # ports:
@@ -84,4 +84,4 @@ services:
       - ./phpmyadmin/sessions:/sessions
 
 volumes:
-  tmp-data:
+  tmp-da
