@@ -37,7 +37,7 @@ services:
     # DjangoのDockerfileをビルドする
     build:
       # ビルドコンテキストはカレントディレクトリ
-      context: ./mysite/
+      context: ./quiz/
     # コンテナ名をFlaskに設定
     container_name: Django
     # ボリュームを指定
@@ -84,4 +84,4 @@ services:
       - ./phpmyadmin/sessions:/sessions
 
 volumes:
-  tmp-data:
+  tmp-data
