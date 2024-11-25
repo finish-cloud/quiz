@@ -37,14 +37,14 @@ services:
     # DjangoのDockerfileをビルドする
     build:
       # ビルドコンテキストはカレントディレクトリ
-      context: ./quiz/
+      context: ./mysite/
     # コンテナ名をFlaskに設定
     container_name: Django
     # ボリュームを指定
     # ローカルのカレントディレクトリをコンテナの/codeにマウントする
     volumes:
       - tmp-data:/app/tmp
-      - ./quiz:/apps
+      - ./mysite:/apps
       - ./Nginx/static:/app/static
     # ローカルの5000番ポートとコンテナの5000番ポートをつなぐ
     # ports:
