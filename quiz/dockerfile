@@ -19,4 +19,15 @@ RUN apt-get update && apt-get install -y \
 
 # コンテナのワークディレクトリを/codeに指定
 WORKDIR /code
-# ローカルのrequirements.txtをコンテナの/codeフォルダ直下に�
+# ローカルのrequirements.txtをコンテナの/codeフォルダ直下に置く
+COPY ./requirements.txt /code/
+# コンテナ内でpip install -r requirements.txtを実行
+
+RUN pip install -U pip setuptools wheel cython && pip install --no-cache-dir -r requirements.txt
+
+# ソースコードをコンテナにコピー
+COPY . /code/
+
+# アプリケーションの起動コマンド
+CMD ["python", "apps.py", "runserver", "0.0.0.0:8000"]
+
