@@ -5,6 +5,9 @@ FROM python:3.13
 ENV PYTHONDONTWRITEBYTECODE=1
 # 標準出力・標準エラーのストリームのバッファリングを行わない
 ENV PYTHONUNBUFFERED=1
+# 環境変数を設定
+ENV DJANGO_SETTINGS_MODULE=mysite.settings
+
 RUN mkdir /code
 
 # 必要なシステムパッケージをインストール
@@ -27,9 +30,6 @@ RUN pip install -U pip setuptools wheel cython && pip install --no-cache-dir -r 
 
 # ソースコードをコンテナにコピー
 COPY . /code/
-
-# ポートを開放
-EXPOSE 8000
 
 # サーバーの起動
 CMD ["gunicorn", "mysite.wsgi:application", "--bind", "0.0.0.0:8000"]

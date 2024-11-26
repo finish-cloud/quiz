@@ -40,6 +40,9 @@ services:
       context: ./quiz/
     # コンテナ名をFlaskに設定
     container_name: Django
+
+    environment:
+    - DJANGO_SETTINGS_MODULE=mysite.settings
     # ボリュームを指定
     # ローカルのカレントディレクトリをコンテナの/codeにマウントする
     volumes:
@@ -59,7 +62,7 @@ services:
 
   web:
     container_name: Nginx
-    # FlaskのDockerfileをビルドする
+    # DjangoのDockerfileをビルドする
     build:
       # ビルドコンテキストはカレントディレクトリ
       context: ./Nginx/
