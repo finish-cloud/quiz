@@ -84,4 +84,4 @@ services:
       - ./phpmyadmin/sessions:/sessions
 
 volumes:
-  tmp-data
+  tmp-data:
