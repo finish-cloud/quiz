@@ -13,7 +13,6 @@ ENV PYTHONPATH=/app
 
 # 必要なシステムパッケージをインストール
 RUN apt-get update && apt-get install -y \
-  RUN pip install python-decouple \
   build-essential \
   libffi-dev \
   libssl-dev \
@@ -22,7 +21,7 @@ RUN apt-get update && apt-get install -y \
   python3-dev \
   && rm -rf /var/lib/apt/lists/*
 
-
+RUN pip install python-decouple
 # 作業ディレクトリを設定
 WORKDIR /app
 
