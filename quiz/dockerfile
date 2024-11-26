@@ -13,6 +13,7 @@ ENV PYTHONPATH=/app
 
 # 必要なシステムパッケージをインストール
 RUN apt-get update && apt-get install -y \
+  RUN pip install python-decouple \
   build-essential \
   libffi-dev \
   libssl-dev \
