@@ -8,7 +8,8 @@ ENV PYTHONUNBUFFERED=1
 # 環境変数を設定
 ENV DJANGO_SETTINGS_MODULE=mysite.settings
 
-RUN mkdir /code
+# Pythonパスを設定
+ENV PYTHONPATH=/app
 
 # 必要なシステムパッケージをインストール
 RUN apt-get update && apt-get install -y \
@@ -20,16 +21,16 @@ RUN apt-get update && apt-get install -y \
   python3-dev \
   && rm -rf /var/lib/apt/lists/*
 
-# コンテナのワークディレクトリを/codeに指定
-WORKDIR /code
-# ローカルのrequirements.txtをコンテナの/codeフォルダ直下に置く
-COPY ./requirements.txt /code/
-# コンテナ内でpip install -r requirements.txtを実行
 
-RUN pip install -U pip setuptools wheel cython && pip install --no-cache-dir -r requirements.txt
+# 作業ディレクトリを設定
+WORKDIR /app
 
-# ソースコードをコンテナにコピー
-COPY . /code/
+# 必要な依存パッケージをインストール
+COPY requirements.txt /app/
+RUN pip install --no-cache-dir -r requirements.txt
+
+# プロジェクト全体をコピー
+COPY ../ /app/
 
 # サーバーの起動
 CMD ["gunicorn", "mysite.wsgi:application", "--bind", "0.0.0.0:8000"]

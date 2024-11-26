@@ -33,7 +33,7 @@ services:
       # ヘルスチェックが失敗しても無視する時間は30秒
       start_period: 30s
 
-  app:
+  django:
     # DjangoのDockerfileをビルドする
     build:
       # ビルドコンテキストはカレントディレクトリ
@@ -47,11 +47,11 @@ services:
     # ローカルのカレントディレクトリをコンテナの/codeにマウントする
     volumes:
       - tmp-data:/app/tmp
-      - ./mysite:/app
+      - .:/app
       - ./Nginx/static:/app/static
-    # ローカルの5000番ポートとコンテナの5000番ポートをつなぐ
-    # ports:
-    # - "5000:5000"
+    # ローカルの8000番ポートとコンテナの5000番ポートをつなぐ
+    ports:
+      - "8000:8000"
     # コマンドを実行
     # command: bash -c "python app.py"
     # 先にdbを起動してからappを起動する
@@ -72,7 +72,7 @@ services:
     ports:
       - "80:80"
     depends_on:
-      - app
+      - django
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
