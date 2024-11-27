@@ -18,16 +18,18 @@ RUN apt-get update && apt-get install -y \
   && rm -rf /var/lib/apt/lists/*
 
 # コンテナのワークディレクトリを/codeに指定
-WORKDIR /code
+WORKDIR /app
 # ローカルのrequirements.txtをコンテナの/codeフォルダ直下に置く
-COPY ./requirements.txt /code/
+COPY ./requirements.txt /app/
 # コンテナ内でpip install -r requirements.txtを実行
 
 RUN pip install -U pip setuptools wheel cython && pip install --no-cache-dir -r requirements.txt
 
 # ソースコードをコンテナにコピー
-COPY . /code/
+COPY . /app/
 
-# アプリケーションの起動コマンド
-CMD ["python", "apps.py", "runserver", "0.0.0.0:8000"]
+# ポートを開放
+EXPOSE 8000
 
+# サーバーの起動
+CMD ["gunicorn", "mysite.wsgi:application", "--bind", "0.0.0.0:8000"]
