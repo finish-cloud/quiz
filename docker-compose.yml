@@ -43,7 +43,6 @@ services:
     # ローカルの8000番ポートとコンテナの8000番ポートをつなぐ
     ports:
       - "3000:3000"
-
     volumes:
       - .:/app
       - /app/node_modules
