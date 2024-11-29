@@ -33,12 +33,36 @@ services:
       # ヘルスチェックが失敗しても無視する時間は30秒
       start_period: 30s
 
+  frontend:
+    # frontendのReactのDockerfileをビルドする
+    build:
+    # ビルドコンテキストはカレントディレクトリ
+      context: ./quiz-frontend/
+    # コンテナ名をReactに設定
+    container_name: React
+    # ローカルの3000番ポートとコンテナの3000番ポートをつなぐ
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - ./Nginx/static:/app/static
+    # 標準入力を保持
+    stdin_open: true
+    # 擬似端末を有効にする
+    tty: true
+    # 先にdbを起動してからappを起動する
+    depends_on:
+      db:
+        # dbのヘルスチェックが終わってからappを起動させる
+        condition: service_healthy
+
   django:
     # DjangoのDockerfileをビルドする
     build:
       # ビルドコンテキストはカレントディレクトリ
       context: ./quiz/
-    # コンテナ名をFlaskに設定
+    # コンテナ名をDjangoに設定
     container_name: Django
 
     environment:
@@ -49,7 +73,7 @@ services:
       - tmp-data:/app/tmp
       - .:/app:cached
       - ./Nginx/static:/app/static
-    # ローカルの8000番ポートとコンテナの5000番ポートをつなぐ
+    # ローカルの8000番ポートとコンテナの8000番ポートをつなぐ
     ports:
       - "8000:8000"
     # コマンドを実行
