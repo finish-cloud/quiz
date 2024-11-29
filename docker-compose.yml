@@ -47,7 +47,7 @@ services:
     # ローカルのカレントディレクトリをコンテナの/codeにマウントする
     volumes:
       - tmp-data:/app/tmp
-      - .:/app
+      - .:/app:cached
       - ./Nginx/static:/app/static
     # ローカルの8000番ポートとコンテナの5000番ポートをつなぐ
     ports:

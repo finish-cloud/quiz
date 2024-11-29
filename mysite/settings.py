@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -77,11 +78,11 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'your_db_name',
-        'USER': 'your_db_user',
-        'PASSWORD': 'your_db_password',
-        'HOST': 'db',  # コンテナ名
-        'PORT': '3306',
+        'NAME': config('MYSQL_DATABASE'),  # 環境変数から読み取る
+        'USER': config('MYSQL_USER'),      # 環境変数から読み取る
+        'PASSWORD': config('MYSQL_PASSWORD'),  # 環境変数から読み取る
+        'HOST': config('MYSQL_HOST', default='localhost'),  # デフォルト値として 'localhost' を指定
+        'PORT': config('MYSQL_PORT', default='3306'),       # デフォルトポートを指定
     }
 }
 

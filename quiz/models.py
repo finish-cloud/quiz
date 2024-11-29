@@ -14,3 +14,9 @@ class Choice(models.Model):
 
     def __str__(self):
         return self.text
+
+class Explanation(models.Model):
+    question = models.OneToOneField(Question, on_delete=models.CASCADE, related_name='explanation')
+    text = models.TextField()
+def __str__(self):
+    return f"「{self.question.text}」の解説"
