@@ -5,7 +5,11 @@ FROM python:3.13
 ENV PYTHONDONTWRITEBYTECODE=1
 # 標準出力・標準エラーのストリームのバッファリングを行わない
 ENV PYTHONUNBUFFERED=1
-RUN mkdir /code
+# 環境変数を設定
+ENV DJANGO_SETTINGS_MODULE=mysite.settings
+
+# Pythonパスを設定
+ENV PYTHONPATH=/app
 
 # 必要なシステムパッケージをインストール
 RUN apt-get update && apt-get install -y \
@@ -17,19 +21,16 @@ RUN apt-get update && apt-get install -y \
   python3-dev \
   && rm -rf /var/lib/apt/lists/*
 
-# コンテナのワークディレクトリを/codeに指定
+
+# 作業ディレクトリを設定
 WORKDIR /app
-# ローカルのrequirements.txtをコンテナの/codeフォルダ直下に置く
-COPY ./requirements.txt /app/
-# コンテナ内でpip install -r requirements.txtを実行
 
-RUN pip install -U pip setuptools wheel cython && pip install --no-cache-dir -r requirements.txt
+# 必要な依存パッケージをインストール
+COPY requirements.txt /app/
+RUN pip install --no-cache-dir -r requirements.txt
 
-# ソースコードをコンテナにコピー
-COPY . /app/
-
-# ポートを開放
-EXPOSE 8000
+# プロジェクト全体をコピー
+COPY ../ /app/
 
 # サーバーの起動
 CMD ["gunicorn", "mysite.wsgi:application", "--bind", "0.0.0.0:8000"]
