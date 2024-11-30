@@ -1,23 +1,31 @@
-# Node.js の公式イメージをベースにする
-FROM node:16-alpine
+# Reactのビルド用
+FROM node:16-alpine as build
 
 # 作業ディレクトリを設定
 WORKDIR /app
 
-# パッケージファイルをコピー
+# package.jsonをコピーして依存関係をインストール
 COPY package.json package-lock.json ./
-
-# 必要な依存関係をインストール
 RUN npm install
 
-# 残りのソースコードをコピー
-COPY . .
-
-# ビルド
+# ソースコードをコピーしてReactをビルド
+COPY . ./
 RUN npm run build
 
-# サーバーを起動
-CMD ["npx", "serve", "-s", "build"]
+# 静的ファイルを提供するステージ
+FROM node:16-alpine
 
-# コンテナが使用するポートを指定
+# グローバルに `serve` をインストール
+RUN npm install -g serve
+
+# 作業ディレクトリを設定
+WORKDIR /app
+
+# ビルド成果物をコピー
+COPY --from=build /app/build ./build
+
+# ポートを公開
 EXPOSE 3000
+
+# serve を使ってビルドされたファイルを提供
+CMD ["serve", "-s", "build", "-l", "3000"]
