@@ -38,10 +38,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'quiz'
+    'quiz',
+    'corsheaders',  # CORS対応のため追加
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',  # CORSミドルウェアを最初に追加
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -105,6 +107,18 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
+# 全てのオリジンを許可する場合 (開発環境のみ推奨)
+CORS_ALLOW_ALL_ORIGINS = True
+
+# 特定のオリジンのみ許可する場合 (推奨)
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:3000",  # ReactのURL
+#     "http://127.0.0.1:3000",  # ReactのローカルURL
+# ]
+
+# 認証情報 (クッキー) を使用する場合
+# CORS_ALLOW_CREDENTIALS = True
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
