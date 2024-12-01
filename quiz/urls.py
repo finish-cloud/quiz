@@ -1,6 +1,6 @@
 from django.urls import path
-from . import views
+from .views import QuizView
 
 urlpatterns = [
-    path('', views.index, name='index'),  # 例: トップページのルート
+    path('api/quiz/', QuizView.as_view(), name='quiz-api'),  # 例: トップページのルート
 ]
