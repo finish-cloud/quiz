@@ -38,6 +38,7 @@ services:
     build:
     # ビルドコンテキストはカレントディレクトリ
       context: ./quiz-frontend/
+      dockerfile: Dockerfile
     # コンテナ名をReactに設定
     container_name: React
     # ローカルの3000番ポートとコンテナの3000番ポートをつなぐ
