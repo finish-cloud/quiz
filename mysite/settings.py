@@ -27,6 +27,7 @@ SECRET_KEY = 'django-insecure-5(980c8q_r-&v4+9_ewd_s%&6aa75!c5bri%8*erap)9-6p+i5
 DEBUG = True
 
 ALLOWED_HOSTS = []
+ALLOWED_HOSTS = config("DJANGO_ALLOWED_HOSTS", default="").split(",")
 
 
 # Application definition
