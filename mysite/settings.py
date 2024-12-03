@@ -15,7 +15,6 @@ from decouple import config, Csv
 
 SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', default=False, cast=bool)
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='127.0.0.1', cast=Csv())
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -30,8 +29,7 @@ SECRET_KEY = 'django-insecure-5(980c8q_r-&v4+9_ewd_s%&6aa75!c5bri%8*erap)9-6p+i5
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-ALLOWED_HOSTS = config("DJANGO_ALLOWED_HOSTS", default="").split(",")
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='127.0.0.1', cast=Csv())
 
 
 # Application definition
