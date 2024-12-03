@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'quiz',
     'corsheaders',  # CORS対応のため追加
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
