@@ -116,10 +116,10 @@ AUTH_PASSWORD_VALIDATORS = [
 CORS_ALLOW_ALL_ORIGINS = True
 
 # 特定のオリジンのみ許可する場合 (推奨)
-# CORS_ALLOWED_ORIGINS = [
-#     "http://localhost:3000",  # ReactのURL
-#     "http://127.0.0.1:3000",  # ReactのローカルURL
-# ]
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",  # ReactのURL
+    "http://127.0.0.1:3000",  # ReactのローカルURL
+]
 
 # 認証情報 (クッキー) を使用する場合
 # CORS_ALLOW_CREDENTIALS = True
