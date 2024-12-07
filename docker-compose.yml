@@ -62,7 +62,7 @@ services:
     # DjangoのDockerfileをビルドする
     build:
       # ビルドコンテキストはカレントディレクトリ
-      context: ./quiz/
+      context: ./
     # コンテナ名をDjangoに設定
     container_name: Django
 
