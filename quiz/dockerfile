@@ -22,6 +22,9 @@ RUN apt-get update && apt-get install -y \
   && rm -rf /var/lib/apt/lists/*
 
 RUN pip install python-decouple
+#自動フォーマットツールやコード静的解析ツールを導入
+RUN pip install --no-cache-dir black isort flake8
+
 # 作業ディレクトリを設定
 WORKDIR /app
 
