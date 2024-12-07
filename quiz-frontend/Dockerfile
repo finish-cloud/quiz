@@ -15,23 +15,18 @@ RUN npm install
 COPY . ./
 RUN npm run build
 
-# 静的ファイルを提供するステージ
-FROM node:16-alpine
-
 # 必要なツールをインストール
 RUN apk add --no-cache xsel
 
-# グローバルに `serve` をインストール
-RUN npm install -g serve
+# Nginx用
+FROM nginx:alpine
 
-# 作業ディレクトリを設定
-WORKDIR /app
+# Reactのビルド成果物をNginxのHTMLディレクトリにコピー
+COPY --from=build /app/build /usr/share/nginx/html
 
-# ビルド成果物をコピー
-COPY --from=build /app/build ./build
+# Nginx設定ファイルをコピー
+COPY ../nginx/nginx.conf /etc/nginx/conf.d/default.conf
 
-# ポートを公開
-EXPOSE 3000
+EXPOSE 80
 
-# serve を使ってビルドされたファイルを提供
-CMD ["serve", "-s", "build", "-l", "3000"]
+CMD ["nginx", "-g", "daemon off;"]
