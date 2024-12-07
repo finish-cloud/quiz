@@ -55,6 +55,7 @@ services:
     # 先にdbを起動してからappを起動する
     depends_on:
       db:
+      - django
         # dbのヘルスチェックが終わってからappを起動させる
         condition: service_healthy
 
@@ -74,6 +75,7 @@ services:
       - tmp-data:/app/tmp
       - .:/app:cached
       - ./Nginx/static:/app/static
+      - media_volume:/app/media
     # ローカルの8000番ポートとコンテナの8000番ポートをつなぐ
     ports:
       - "8000:8000"
@@ -81,6 +83,7 @@ services:
     # command: bash -c "python app.py"
     # 先にdbを起動してからappを起動する
     depends_on:
+      - backend
       db:
         # dbのヘルスチェックが終わってからappを起動させる
         condition: service_healthy
@@ -113,3 +116,5 @@ services:
 
 volumes:
   tmp-data:
+  static_volume:
+  media_volume:
