@@ -13,15 +13,8 @@ ENV PYTHONPATH=/app
 
 # 必要なシステムパッケージをインストール
 RUN apt-get update && apt-get install -y \
-  build-essential \
-  libffi-dev \
-  libssl-dev \
-  libyaml-dev \
-  gcc \
-  python3-dev \
+  build-essential libffi-dev libssl-dev libyaml-dev gcc python3-dev \
   && rm -rf /var/lib/apt/lists/*
-
-RUN pip install python-decouple
 #自動フォーマットツールやコード静的解析ツールを導入
 RUN pip install --no-cache-dir black isort flake8
 
