@@ -12,8 +12,11 @@ ENV DJANGO_SETTINGS_MODULE=mysite.settings
 ENV PYTHONPATH=/app
 
 # 必要なシステムパッケージをインストール
-RUN apt-get update && apt-get install -y \
-  build-essential libffi-dev libssl-dev libyaml-dev gcc python3-dev \
+RUN apt-get update && apt-get install -y --no-install-recommends \
+  build-essential \
+  libffi-dev \
+  libssl-dev \
+  python3-dev \
   && rm -rf /var/lib/apt/lists/*
 #自動フォーマットツールやコード静的解析ツールを導入
 RUN pip install --no-cache-dir black isort flake8
@@ -33,4 +36,4 @@ EXPOSE 8000
 # 静的ファイルを収集
 RUN python manage.py collectstatic --noinput
 
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "backend.wsgi:application"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "mysite.wsgi:application"]

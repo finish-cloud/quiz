@@ -63,7 +63,6 @@ services:
       context: ./
     # コンテナ名をDjangoに設定
     container_name: Django
-
     environment:
     - DJANGO_SETTINGS_MODULE=mysite.settings
     # ボリュームを指定
