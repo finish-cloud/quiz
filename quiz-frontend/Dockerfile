@@ -18,14 +18,9 @@ RUN npm run build
 # 必要なツールをインストール
 RUN apk add --no-cache xsel
 
-# Nginx用
+# Nginxで静的ファイルを提供するため、buildディレクトリをコピー
 FROM nginx:alpine
-
-# Reactのビルド成果物をNginxのHTMLディレクトリにコピー
 COPY --from=build /app/build /usr/share/nginx/html
-
-# Nginx設定ファイルをコピー
-COPY ../nginx/nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
 

@@ -45,9 +45,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - .:/app
-      - /app/node_modules
-      - ./Nginx/static:/app/static
+      - ./frontend/build:/usr/share/nginx/html  # Reactのビルド成果物をNginxに渡す
     # 標準入力を保持
     stdin_open: true
     # 擬似端末を有効にする
