@@ -55,7 +55,6 @@ services:
     # 先にdbを起動してからappを起動する
     depends_on:
       db:
-      - django
         # dbのヘルスチェックが終わってからappを起動させる
         condition: service_healthy
 
@@ -83,7 +82,6 @@ services:
     # command: bash -c "python app.py"
     # 先にdbを起動してからappを起動する
     depends_on:
-      - backend
       db:
         # dbのヘルスチェックが終わってからappを起動させる
         condition: service_healthy
