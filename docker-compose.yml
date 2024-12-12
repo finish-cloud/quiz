@@ -20,6 +20,8 @@ services:
     # コンテナ内の環境変数を設定
     env_file:
       - .env
+    networks:
+      - app-network
     # DBのコンテナのヘルスチェックを行う
     # mysqladmin(MySQLサーバーの管理を行うクライアントを使ってDBコンテナ自身(127.0.0.1)にpingを送ってヘルスチェックを行う
     healthcheck:
@@ -33,7 +35,7 @@ services:
       # ヘルスチェックが失敗しても無視する時間は30秒
       start_period: 30s
 
-  frontend:
+  react:
     # frontendのReactのDockerfileをビルドする
     build:
     # ビルドコンテキストはカレントディレクトリ
@@ -45,9 +47,11 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./frontend/build:/usr/share/nginx/html  # Reactのビルド成果物をNginxに渡す
+      - ./quiz-frontend/build:/usr/share/nginx/html  # Reactのビルド成果物をNginxに渡す
     # 標準入力を保持
     stdin_open: true
+    networks:
+      - app-network
     # 擬似端末を有効にする
     tty: true
     # 先にdbを起動してからappを起動する
@@ -61,6 +65,7 @@ services:
     build:
       # ビルドコンテキストはカレントディレクトリ
       context: ./
+      dockerfile: Dockerfile
     # コンテナ名をDjangoに設定
     container_name: Django
     environment:
@@ -71,12 +76,16 @@ services:
       - tmp-data:/app/tmp
       - .:/app:cached
       - ./Nginx/static:/app/static
-      - media_volume:/app/media
+      - ./mysite:/app/mysite:cached
     # ローカルの8000番ポートとコンテナの8000番ポートをつなぐ
     ports:
       - "8000:8000"
+    networks:
+      - app-network
     # コマンドを実行
     # command: bash -c "python app.py"
+    env_file:
+      - .env
     # 先にdbを起動してからappを起動する
     depends_on:
       db:
@@ -94,8 +103,11 @@ services:
       - ./Nginx/static:/app/static
     ports:
       - "80:80"
+    networks:
+      - app-network
     depends_on:
       - django
+      - react
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
@@ -106,10 +118,19 @@ services:
       - db
     ports:
       - 4000:80
+    networks:
+      - app-network
     volumes:
       - ./phpmyadmin/sessions:/sessions
 
 volumes:
   tmp-data:
+    driver: local
   static_volume:
+    driver: local
   media_volume:
+    driver: local
+
+networks:
+  app-network:
+    driver: bridge

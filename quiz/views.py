@@ -14,4 +14,3 @@ class QuizView(APIView):
         questions = Question.objects.all()
         serializer = QuestionSerializer(questions, many=True)
         return Response(serializer.data)
-

@@ -12,21 +12,21 @@ ENV DJANGO_SETTINGS_MODULE=mysite.settings
 ENV PYTHONPATH=/app
 
 # 必要なシステムパッケージをインストール
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get install -y \
   build-essential \
   libffi-dev \
   libssl-dev \
   python3-dev \
   && rm -rf /var/lib/apt/lists/*
-#自動フォーマットツールやコード静的解析ツールを導入
-RUN pip install --no-cache-dir black isort flake8
 
 # 作業ディレクトリを設定
 WORKDIR /app
 
 # 必要な依存パッケージをインストール
 COPY requirements.txt /app/
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt \
+  #自動フォーマットツールやコード静的解析ツールを導入
+  && pip install --no-cache-dir black isort flake8 gevent gunicorn
 
 # プロジェクト全体をコピー
 COPY ../ /app/
@@ -36,4 +36,4 @@ EXPOSE 8000
 # 静的ファイルを収集
 RUN python manage.py collectstatic --noinput
 
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "mysite.wsgi:application"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "mysite.asgi:application", "--workers=2", "--worker-class=uvicorn.workers.UvicornWorker"]
