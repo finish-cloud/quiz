@@ -82,11 +82,11 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': config('MYSQL_DATABASE'),  # 環境変数から読み取る
-        'USER': config('MYSQL_USER'),      # 環境変数から読み取る
-        'PASSWORD': config('MYSQL_PASSWORD'),  # 環境変数から読み取る
-        'HOST': config('MYSQL_HOST', default='localhost'),  # デフォルト値として 'localhost' を指定
-        'PORT': config('MYSQL_PORT', default='3306'),       # デフォルトポートを指定
+        'NAME': config('MYSQL_DATABASE', default='default_db_name'), # 環境変数から読み取る
+        'USER': config('MYSQL_USER', default='root'), # 環境変数から読み取る
+        'PASSWORD': config('MYSQL_PASSWORD', default='password'), # 環境変数から読み取る
+        'HOST': config('MYSQL_HOST', default='localhost'), # デフォルト値として 'localhost' を指定
+        'PORT': config('MYSQL_PORT', default='3306'), # デフォルトポートを指定
     }
 }
 

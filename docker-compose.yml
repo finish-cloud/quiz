@@ -48,6 +48,8 @@ services:
       - "3000:3000"
     volumes:
       - ./quiz-frontend/build:/usr/share/nginx/html  # Reactのビルド成果物をNginxに渡す
+    # npm install を実行
+    command: sh -c "cd /app/ && yarn start"
     # 標準入力を保持
     stdin_open: true
     networks:
@@ -64,7 +66,7 @@ services:
     # DjangoのDockerfileをビルドする
     build:
       # ビルドコンテキストはカレントディレクトリ
-      context: ./
+      context: ./quiz-backend/
       dockerfile: Dockerfile
     # コンテナ名をDjangoに設定
     container_name: Django
@@ -74,9 +76,9 @@ services:
     # ローカルのカレントディレクトリをコンテナの/codeにマウントする
     volumes:
       - tmp-data:/app/tmp
-      - .:/app:cached
+      - ./quiz-backend:/app:cached
       - ./Nginx/static:/app/static
-      - ./mysite:/app/mysite:cached
+      - ./quiz-backend/mysite:/app/mysite:cached
     # ローカルの8000番ポートとコンテナの8000番ポートをつなぐ
     ports:
       - "8000:8000"

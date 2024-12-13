@@ -4,11 +4,13 @@ FROM node:16-alpine AS build
 # 作業ディレクトリを設定
 WORKDIR /app
 
+# package.jsonをコピーして依存関係をインストール
+COPY package*.json ./
+
 # 必要なツールをインストール
 RUN apk add --no-cache xsel
+RUN apk add --no-cache npm
 
-# package.jsonをコピーして依存関係をインストール
-COPY package.json package-lock.json ./
 RUN npm install
 
 # ソースコードをコピーしてReactをビルド
