@@ -1,5 +1,3 @@
-# docker-composeのバージョンを指定
-version: "3.9"
 
 # db(MySQL),app(Django)のコンテナを作成
 services:
@@ -48,8 +46,6 @@ services:
       - "3000:80"
     volumes:
       - ./quiz-frontend/build:/usr/share/nginx/html  # Reactのビルド成果物をNginxに渡す
-    # npm install を実行
-    command: ["npm", "start"]
     # 標準入力を保持
     stdin_open: true
     networks:
