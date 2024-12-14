@@ -45,11 +45,11 @@ services:
     container_name: React
     # ローカルの3000番ポートとコンテナの3000番ポートをつなぐ
     ports:
-      - "3000:3000"
+      - "3000:80"
     volumes:
       - ./quiz-frontend/build:/usr/share/nginx/html  # Reactのビルド成果物をNginxに渡す
     # npm install を実行
-    command: sh -c "cd /app/ && yarn start"
+    command: ["npm", "start"]
     # 標準入力を保持
     stdin_open: true
     networks:
@@ -75,7 +75,7 @@ services:
     # ボリュームを指定
     # ローカルのカレントディレクトリをコンテナの/codeにマウントする
     volumes:
-      - tmp-data:/app/tmp
+      - ./quiz-backend/tmp-data:/app/tmp
       - ./quiz-backend:/app:cached
       - ./Nginx/static:/app/static
       - ./quiz-backend/mysite:/app/mysite:cached
