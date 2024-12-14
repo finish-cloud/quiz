@@ -16,8 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.http import HttpResponse
+
+def index(request):
+    return HttpResponse("Welcome to Django backend!")
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('quiz/', include('quiz.urls')), #追加
+    path('quiz/', include('quiz.urls')), # quizアプリのルートをインクルード
+    path('', index, name='index'),  # ルートURL
 ]
