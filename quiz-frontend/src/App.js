@@ -1,25 +1,29 @@
-import logo from './logo.svg';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+function QuizApp() {
+  const [questions, setQuestions] = useState([])
+  useEffect(() => {
+    axios.get("http://127.0.0.1:8000/api/questions/")
+      .then(response => setQuestions(response.data))
+      .catch(error => console.error('Error:', error))
+  }, [])
+    return (
+        <div className="App">
+            <h1>Quiz App</h1>
+            {questions.map(question => (
+                <div key={question.id}>
+                    <h2>{question.text}</h2>
+                    <ul>
+                        {question.choices.map(choice => (
+                            <li key={choice.id}>{choice.text}</li>
+                        ))}
+                    </ul>
+                    {question.explanation && <p>{question.explanation.text}</p>}
+                </div>
+            ))}
+        </div>
+    );
 }
-
-export default App;
+export default QuizApp;
