@@ -1,8 +1,11 @@
 FROM nginx:1.23.2
 
+# 古い設定ファイルを削除
 RUN rm -f /etc/nginx/conf.d/*
-ADD nginx.conf /etc/nginx/conf.d/nginx.conf
 
+# 必要な設定ファイルを追加
+ADD nginx.conf /etc/nginx/conf.d/default.conf
+
+# 静的ファイルのコピー
 COPY static/ /app/static/
-
-CMD ["nginx", "-g", "daemon off;", "-c", "/etc/nginx/nginx.conf"]
+CMD ["nginx", "-g", "daemon off;"]

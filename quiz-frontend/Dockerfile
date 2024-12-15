@@ -19,7 +19,7 @@ RUN npm run build
 FROM nginx:alpine
 
 # Reactのビルド成果物をNginxのドキュメントルートにコピー
-COPY --from=build /app/build /usr/share/nginx/html
+COPY --from=build /app/build /usr/share/nginx/html/react-static
 
 # Nginxで使用するポートを公開
 EXPOSE 80
