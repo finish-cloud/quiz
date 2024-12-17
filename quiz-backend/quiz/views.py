@@ -5,8 +5,9 @@ from rest_framework.response import Response
 from .models import Question
 from .serializers import QuestionSerializer
 
+
 def index(request):
-    return HttpResponse ("Hello, Django!")
+    return render(request, "build/index.html")
 
 class QuizView(APIView):
     def get(self, request):

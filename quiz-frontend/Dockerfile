@@ -1,31 +1,28 @@
-# Reactのビルド用
-FROM node:16-alpine as build
+# Reactのビルド用ステージ
+FROM node:lts-alpine AS build
 
 # 作業ディレクトリを設定
 WORKDIR /app
 
-# package.jsonをコピーして依存関係をインストール
-COPY package.json package-lock.json ./
+# package.jsonとpackage-lock.jsonをコピーして依存関係をインストール
+COPY package*.json ./
 RUN npm install
+
+# ビルド時に OpenSSL の互換モードを有効にする
+ENV NODE_OPTIONS=--openssl-legacy-provider
 
 # ソースコードをコピーしてReactをビルド
 COPY . ./
 RUN npm run build
 
-# 静的ファイルを提供するステージ
-FROM node:16-alpine
+# Nginxを使用して静的ファイルを提供するステージ
+FROM nginx:alpine
 
-# グローバルに `serve` をインストール
-RUN npm install -g serve
+# Reactのビルド成果物をNginxのドキュメントルートにコピー
+COPY --from=build /app/build /usr/share/nginx/html
 
-# 作業ディレクトリを設定
-WORKDIR /app
+# Nginxで使用するポートを公開
+EXPOSE 80
 
-# ビルド成果物をコピー
-COPY --from=build /app/build ./build
-
-# ポートを公開
-EXPOSE 3000
-
-# serve を使ってビルドされたファイルを提供
-CMD ["serve", "-s", "build", "-l", "3000"]
+# Nginxをフォアグラウンドで実行
+CMD ["nginx", "-g", "daemon off;"]

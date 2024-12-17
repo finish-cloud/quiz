@@ -1,5 +1,3 @@
-# docker-composeのバージョンを指定
-version: "3.9"
 
 # db(MySQL),app(Django)のコンテナを作成
 services:
@@ -20,6 +18,8 @@ services:
     # コンテナ内の環境変数を設定
     env_file:
       - .env
+    networks:
+      - app-network
     # DBのコンテナのヘルスチェックを行う
     # mysqladmin(MySQLサーバーの管理を行うクライアントを使ってDBコンテナ自身(127.0.0.1)にpingを送ってヘルスチェックを行う
     healthcheck:
@@ -33,7 +33,7 @@ services:
       # ヘルスチェックが失敗しても無視する時間は30秒
       start_period: 30s
 
-  frontend:
+  react:
     # frontendのReactのDockerfileをビルドする
     build:
     # ビルドコンテキストはカレントディレクトリ
@@ -43,13 +43,13 @@ services:
     container_name: React
     # ローカルの3000番ポートとコンテナの3000番ポートをつなぐ
     ports:
-      - "3000:3000"
+      - "3000:80"
     volumes:
-      - .:/app
-      - /app/node_modules
-      - ./Nginx/static:/app/static
+      - ./quiz-frontend/build:/usr/share/nginx/html  # Reactのビルド成果物をNginxに渡す
     # 標準入力を保持
     stdin_open: true
+    networks:
+      - app-network
     # 擬似端末を有効にする
     tty: true
     # 先にdbを起動してからappを起動する
@@ -62,23 +62,28 @@ services:
     # DjangoのDockerfileをビルドする
     build:
       # ビルドコンテキストはカレントディレクトリ
-      context: ./quiz/
+      context: ./quiz-backend/
+      dockerfile: Dockerfile
     # コンテナ名をDjangoに設定
     container_name: Django
-
     environment:
     - DJANGO_SETTINGS_MODULE=mysite.settings
     # ボリュームを指定
     # ローカルのカレントディレクトリをコンテナの/codeにマウントする
     volumes:
-      - tmp-data:/app/tmp
-      - .:/app:cached
+      - ./quiz-backend/tmp-data:/app/tmp
+      - ./quiz-backend:/app:cached
       - ./Nginx/static:/app/static
+      - ./quiz-backend/mysite:/app/mysite:cached
     # ローカルの8000番ポートとコンテナの8000番ポートをつなぐ
     ports:
       - "8000:8000"
+    networks:
+      - app-network
     # コマンドを実行
     # command: bash -c "python app.py"
+    env_file:
+      - .env
     # 先にdbを起動してからappを起動する
     depends_on:
       db:
@@ -96,8 +101,11 @@ services:
       - ./Nginx/static:/app/static
     ports:
       - "80:80"
+    networks:
+      - app-network
     depends_on:
       - django
+      - react
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
@@ -108,8 +116,19 @@ services:
       - db
     ports:
       - 4000:80
+    networks:
+      - app-network
     volumes:
       - ./phpmyadmin/sessions:/sessions
 
 volumes:
   tmp-data:
+    driver: local
+  static_volume:
+    driver: local
+  media_volume:
+    driver: local
+
+networks:
+  app-network:
+    driver: bridge

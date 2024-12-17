@@ -9,28 +9,31 @@ ENV PYTHONUNBUFFERED=1
 ENV DJANGO_SETTINGS_MODULE=mysite.settings
 
 # Pythonパスを設定
-ENV PYTHONPATH=/app
+ENV PYTHONPATH=/quiz-backend/app
 
 # 必要なシステムパッケージをインストール
 RUN apt-get update && apt-get install -y \
   build-essential \
   libffi-dev \
   libssl-dev \
-  libyaml-dev \
-  gcc \
   python3-dev \
   && rm -rf /var/lib/apt/lists/*
 
-RUN pip install python-decouple
 # 作業ディレクトリを設定
 WORKDIR /app
 
 # 必要な依存パッケージをインストール
 COPY requirements.txt /app/
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt \
+  #自動フォーマットツールやコード静的解析ツールを導入
+  && pip install --no-cache-dir black isort flake8 gevent gunicorn
 
 # プロジェクト全体をコピー
 COPY ../ /app/
 
-# サーバーの起動
-CMD ["gunicorn", "mysite.wsgi:application", "--bind", "0.0.0.0:8000"]
+EXPOSE 8000
+
+# 静的ファイルを収集
+RUN python manage.py collectstatic --noinput
+
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "mysite.asgi:application", "--workers=2", "--worker-class=uvicorn.workers.UvicornWorker"]
