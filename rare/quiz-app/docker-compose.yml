@@ -1,0 +1,132 @@
+# db(MySQL),app(Django)のコンテナを作成
+services:
+  db:
+    # MySQLのDockerfileをビルドする
+    build:
+      # ビルドコンテキストはカレントディレクトリ
+      context: ./MySQL/
+    # コンテナ名をmysqlに設定
+    container_name: MySQL
+    # M1チップでも動くように
+    # Intel Macの場合あってもなくても動く
+    platform: linux/x86_64
+    # DBのボリュームを指定
+    # ローカルの/data/dbをコンテナの/var/lib/mysqlにマウントする
+    # volumes:
+    #   - mysql_data:/var/lib/mysql
+    # コンテナ内の環境変数を設定
+    env_file:
+      - .env
+    networks:
+      - app-network
+    # DBのコンテナのヘルスチェックを行う
+    # mysqladmin(MySQLサーバーの管理を行うクライアントを使ってDBコンテナ自身(127.0.0.1)にpingを送ってヘルスチェックを行う
+    healthcheck:
+      test: mysqladmin ping -h 127.0.0.1 -u$$MYSQL_USER -p$$MYSQL_PASSWORD
+      # ヘルスチェックのインターバルは10秒
+      interval: 10s
+      # タイムアウト時間は10秒
+      timeout: 10s
+      # リトライ回数は3回
+      retries: 3
+      # ヘルスチェックが失敗しても無視する時間は30秒
+      start_period: 30s
+
+  react:
+    # frontendのReactのDockerfileをビルドする
+    build:
+    # ビルドコンテキストはカレントディレクトリ
+      context: ./quiz-frontend/
+      dockerfile: Dockerfile
+    # コンテナ名をReactに設定
+    container_name: React
+    # ローカルの3000番ポートとコンテナの3000番ポートをつなぐ
+    ports:
+      - "3000:80"
+    volumes:
+      - ./quiz-frontend/build:/usr/share/nginx/html # Reactのビルド成果物をNginxに渡す
+      - ./quiz-frontend:/app
+    # 標準入力を保持
+    stdin_open: true
+    networks:
+      - app-network
+    # 擬似端末を有効にする
+    tty: true
+    # 先にdbを起動してからappを起動する
+    depends_on:
+      db:
+        # dbのヘルスチェックが終わってからappを起動させる
+        condition: service_healthy
+
+  django:
+    # DjangoのDockerfileをビルドする
+    build:
+      # ビルドコンテキストはカレントディレクトリ
+      context: ./quiz-backend/
+      dockerfile: Dockerfile
+    # コンテナ名をDjangoに設定
+    container_name: Django
+    environment:
+    - DJANGO_SETTINGS_MODULE=mysite.settings
+    # ボリュームを指定
+    # ローカルのカレントディレクトリをコンテナの/codeにマウントする
+    volumes:
+      - ./quiz-backend:/app:cached
+      - ./quiz-backend/mysite:/app/mysite:cached
+    # ローカルの8000番ポートとコンテナの8000番ポートをつなぐ
+    ports:
+      - "8000:8000"
+    networks:
+      - app-network
+    # コマンドを実行
+    # command: bash -c "python app.py"
+    env_file:
+      - .env
+    # 先にdbを起動してからappを起動する
+    depends_on:
+      db:
+        # dbのヘルスチェックが終わってからappを起動させる
+        condition: service_healthy
+
+  web:
+    container_name: Nginx
+    # DjangoのDockerfileをビルドする
+    build:
+      # ビルドコンテキストはカレントディレクトリ
+      context: ./Nginx/
+    volumes:
+      - ./quiz-frontend/build:/usr/share/nginx/html
+      - ./Nginx/nginx.conf:/etc/nginx/conf.d/default.conf #nginx.confをマウント
+    ports:
+      - "80:80"
+    networks:
+      - app-network
+    depends_on:
+      - django
+      - react
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    # コンテナ内の環境変数を.envを使って設定
+    env_file:
+      - .env
+    links:
+      - db
+    ports:
+      - 4000:80
+    networks:
+      - app-network
+    volumes:
+      - ./phpmyadmin/sessions:/sessions
+
+volumes:
+  tmp-data:
+    driver: local
+  static_volume:
+    driver: local
+  media_volume:
+    driver: local
+
+networks:
+  app-network:
+    driver: bridge
