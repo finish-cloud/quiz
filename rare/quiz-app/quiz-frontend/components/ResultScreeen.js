@@ -17,7 +17,10 @@ const ResultScreen = ({ isCorrect, explanation, onRetry }) => {
                 <h4>不正解です...</h4>
               </div>
           )}
-          <p>{ explanation }</p>
+          <p>{explanation}</p>
+          <button className="btn" onClick={onRetry}>
+            もう一度挑戦する
+          </button>
         </div>
       </div>
     </div>
