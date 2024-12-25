@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import QuestionScreen from "./components/QuestionScreen";
+import ResultScreen from "./components/ResultScreen";
 import axios from 'axios';
 import './App.css';
 
